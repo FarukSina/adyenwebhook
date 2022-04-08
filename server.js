@@ -104,7 +104,6 @@ app.post("/api/webhook/notification", async (req, res) => {
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem);
-    const notification = NotificationRequestItem.NotificationRequestItem;
     try {
       if (validator.validateHMAC(notification, process.env.HMAC_KEY)) {
         if (NotificationRequestItem.success === "true") {
@@ -114,6 +113,7 @@ app.post("/api/webhook/notification", async (req, res) => {
             if (payment) {
               payment.status = "Authorised";
               payment.paymentRef = NotificationRequestItem.pspReference;
+              console.log("payment", payment);
             }
           } else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
             const payment = findPayment(NotificationRequestItem.pspReference);
@@ -121,6 +121,8 @@ app.post("/api/webhook/notification", async (req, res) => {
               console.log("Payment found: ", JSON.stringify(payment));
               // update with additionalData.modification.action
               if (
+                NotificationRequestItem.additionalData &&
+                NotificationRequestItem.additionalData["modification.action"] &&
                 "modification.action" in NotificationRequestItem.additionalData &&
                 "refund" === NotificationRequestItem.additionalData["modification.action"]
               ) {
