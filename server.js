@@ -54,7 +54,6 @@ app.post("/api/sessions", async (req, res) => {
       returnUrl: `http://localhost:8080/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
       allowedPaymentMethods: allowedPaymentMethods ? allowedPaymentMethods : null, // optional
       additionalData: { executeThreeD: true }, // optional
-      captureDelayHours: 0,
     };
     console.log("body", body);
 
@@ -104,7 +103,7 @@ app.post("/api/webhook/notification", async (req, res) => {
   const notificationRequestItems = req.body.notificationItems;
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
-    console.info("Received webhook notification", NotificationRequestItem);
+    console.info("Received webhook notification", NotificationRequestItem, process.env.HMAC_KEY);
     try {
       if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
         if (NotificationRequestItem.success === "true") {
