@@ -98,48 +98,29 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
 });
 
 // Receive webhook notifications
-app.post("/api/webhook/notification", async (req, res) => {
-  // get the notification request from POST body
-  const notificationRequestItems = req.body.notificationItems;
 
-  notificationRequestItems.forEach(({ NotificationRequestItem }) => {
-    console.info("Received webhook notification", NotificationRequestItem);
-    try {
-      if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
-        if (NotificationRequestItem.success === "true") {
-          // Process the notification based on the eventCode
-          if (NotificationRequestItem.eventCode === "AUTHORISATION") {
-            const payment = paymentStore[NotificationRequestItem.merchantReference];
-            if (payment) {
-              payment.status = "Authorised";
-              payment.paymentRef = NotificationRequestItem.pspReference;
-              console.log("payment", payment);
-            }
-          } else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
-            const payment = findPayment(NotificationRequestItem.pspReference);
-            if (payment) {
-              console.log("Payment found: ", JSON.stringify(payment));
-              // update with additionalData.modification.action
-              if (
-                NotificationRequestItem.additionalData &&
-                NotificationRequestItem.additionalData["modification.action"] &&
-                "modification.action" in NotificationRequestItem.additionalData &&
-                "refund" === NotificationRequestItem.additionalData["modification.action"]
-              ) {
-                payment.status = "Refunded";
-              } else {
-                payment.status = "Cancelled";
-              }
-            }
-          } else {
-            console.info("skipping non actionable webhook");
-          }
-        }
-      } else {
-        console.error("NotificationRequest with invalid HMAC key received");
-      }
-    } catch (err) {
-      console.error("Error: ", err);
+app.post("/api/webhook/notifications", async (req, res) => {
+  // YOUR_HMAC_KEY from the Customer Area
+  const hmacKey = process.env.ADYEN_HMAC_KEY;
+  const validator = new hmacValidator();
+  // Notification Request JSON
+  const notificationRequest = req.body;
+  const notificationRequestItems = notificationRequest.notificationItems;
+
+  // Handling multiple notificationRequests
+  notificationRequestItems.forEach(function (notificationRequestItem) {
+    const notification = notificationRequestItem.NotificationRequestItem;
+
+    // Handle the notification
+    if (validator.validateHMAC(notification, hmacKey)) {
+      // Process the notification based on the eventCode
+      const merchantReference = notification.merchantReference;
+      const eventCode = notification.eventCode;
+      console.log("merchantReference:" + merchantReference + " eventCode:" + eventCode);
+    } else {
+      // invalid hmac: do not send [accepted] response
+      console.log("Invalid HMAC signature: " + notification);
+      res.status(401).send("Invalid HMAC signature");
     }
   });
 
