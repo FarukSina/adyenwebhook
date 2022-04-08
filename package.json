@@ -18,7 +18,8 @@
     "uuidv4": "^6.2.13"
   },
   "scripts": {
-    "start": "nodemon server"
+    "start": "nodemon server",
+    "dev": "dotenv -e .env react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -35,7 +36,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080",
+  "proxy": "https://adyenfaruk123.herokuapp.com/",
   "devDependencies": {
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
