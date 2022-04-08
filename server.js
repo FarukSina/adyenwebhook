@@ -29,7 +29,6 @@ const client = new Client({ config });
 client.setEnvironment("TEST");
 const checkout = new CheckoutAPI(client);
 const modification = new Modification(client);
-const validator = new hmacValidator();
 
 // in memory store for transaction
 const paymentStore = {};
@@ -101,15 +100,17 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
 
 app.post("/api/webhook/notifications", async (req, res) => {
   // YOUR_HMAC_KEY from the Customer Area
-  const hmacKey = process.env.ADYEN_HMAC_KEY;
+  const hmacKey = process.env.REACT_APP_ADYEN_HMAC_KEY;
   const validator = new hmacValidator();
   // Notification Request JSON
   const notificationRequest = req.body;
   const notificationRequestItems = notificationRequest.notificationItems;
+  console.log("notificationRequestItems", notificationRequestItems);
 
   // Handling multiple notificationRequests
   notificationRequestItems.forEach(function (notificationRequestItem) {
     const notification = notificationRequestItem.NotificationRequestItem;
+    console.log("notification", notification);
 
     // Handle the notification
     if (validator.validateHMAC(notification, hmacKey)) {
