@@ -29,6 +29,7 @@ const client = new Client({ config });
 client.setEnvironment("TEST");
 const checkout = new CheckoutAPI(client);
 const modification = new Modification(client);
+const validator = new hmacValidator();
 
 // in memory store for transaction
 const paymentStore = {};
