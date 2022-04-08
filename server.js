@@ -148,9 +148,6 @@ app.post("/api/webhook/notification", async (req, res) => {
 /* ################# CLIENT ENDPOINTS ###################### */
 
 // Handles any requests that doesn't match the above
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
 
 /* ################# end CLIENT ENDPOINTS ###################### */
 
