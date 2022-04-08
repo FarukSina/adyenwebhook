@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "nodemon server",
-    "dev": "dotenv -e .env react-scripts start"
+    "dev": "set PORT=8080 && react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"

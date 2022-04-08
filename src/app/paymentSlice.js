@@ -58,7 +58,7 @@ export const initiateCheckout = (type) => async (dispatch) => {
     allowedPaymentMethods = ["card", "paypal"];
   }
   console.log("allowedPaymentMethods2", allowedPaymentMethods);
-  const response = await fetch(`/api/sessions?type=${type}`, {
+  const response = await fetch(`https://adyenheroku2.herokuapp.com/api/sessions?type=${type}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -69,12 +69,12 @@ export const initiateCheckout = (type) => async (dispatch) => {
 };
 
 export const getPaymentDataStore = () => async (dispatch) => {
-  const response = await fetch("/api/getPaymentDataStore");
+  const response = await fetch("https://adyenheroku2.herokuapp.com/api/getPaymentDataStore");
   dispatch(paymentDataStore([await response.json(), response.status]));
 };
 
 export const cancelOrRefundPayment = (orderRef) => async (dispatch) => {
-  await fetch(`/api/cancelOrRefundPayment?orderRef=${orderRef}`, {
+  await fetch(`https://adyenheroku2.herokuapp.com/api/cancelOrRefundPayment?orderRef=${orderRef}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
