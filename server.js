@@ -54,6 +54,7 @@ app.post("/api/sessions", async (req, res) => {
       returnUrl: `http://localhost:8080/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
       allowedPaymentMethods: allowedPaymentMethods ? allowedPaymentMethods : null, // optional
       additionalData: { executeThreeD: true }, // optional
+      captureDelayHours: 0,
     };
     console.log("body", body);
 
