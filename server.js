@@ -104,6 +104,10 @@ app.post("/api/webhook/notification", async (req, res) => {
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem, process.env.HMAC_KEY);
+    console.log(
+      "\n\n\nvalidator.validateHMACNotificationRequestItem, process.env.HMAC_KEY\n\n\n\n",
+      validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)
+    );
     try {
       if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
         if (NotificationRequestItem.success === "true") {
