@@ -87,6 +87,7 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
 
   try {
     // Return the response back to client
+    console.log("paymentStore", paymentStore, payload, paymentStore[req.query.orderRef], req.query.orderRef);
     const response = await modification.reversals(paymentStore[req.query.orderRef].paymentRef, payload);
     paymentStore[req.query.orderRef].status = "Refund Initiated";
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
