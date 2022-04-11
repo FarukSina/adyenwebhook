@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const { uuid } = require("uuidv4");
+const { nanoid } = require("nanoid");
 
 const { Client, Config, CheckoutAPI, Modification, hmacValidator } = require("@adyen/api-library");
 // init app
@@ -42,7 +42,7 @@ app.post("/api/sessions", async (req, res) => {
   const { allowedPaymentMethods } = req.body;
   try {
     // unique ref for the transaction
-    const orderRef = uuid();
+    const orderRef = nanoid();
 
     console.log("Received payment request for orderRef: " + orderRef);
     const body = {
@@ -79,7 +79,7 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
   // Create the payload for cancelling payment
   const payload = {
     merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
-    reference: uuid(),
+    reference: nanoid(),
   };
 
   try {
@@ -104,7 +104,7 @@ app.post("/api/capturePayment", async (req, res) => {
   let paymentCaptureRequest = {
     merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
     amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
-    reference: uuid(),
+    reference: nanoid(),
   };
   try {
     const pspReference = paymentStore[req.query.orderRef].paymentRef;
