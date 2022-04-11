@@ -119,8 +119,8 @@ app.post("/api/capturePayment", async (req, res) => {
     res.json(response);
     console.info("Capture initiated for", response);
   } catch (error) {
-    console.error(`Error: ${error.message}, error code: ${error.errorCode}`);
-    res.status(error.statusCode).json(error.message);
+    console.error(`Error: ${error}`);
+    res.status(400).json(error);
   }
 });
 
