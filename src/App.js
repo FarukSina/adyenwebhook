@@ -5,6 +5,8 @@ import { RedirectContainer } from "./features/redirect/Redirect";
 import { PreviewContainer } from "./features/preview/Preview";
 import { StatusContainer } from "./features/status/Status";
 import { CancelContainer } from "./features/cancel/Cancel";
+import { CaptureContainer } from "./features/capture/Capture";
+
 import "./App.css";
 import { Home } from "./features/home/Home";
 
@@ -21,6 +23,7 @@ const App = () => (
         <Route path="/checkout/:type" element={<PaymentContainer />} />
         <Route path="/status/:type" element={<StatusContainer />} />
         <Route path="/cancel" element={<CancelContainer />} />
+        <Route path="/capture" element={<CaptureContainer />} />
         <Route path="/redirect" element={<RedirectContainer />} />
         <Route path="/" element={<Home />} />
       </Routes>

@@ -88,6 +88,8 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
   try {
     // Return the response back to client
     console.log("paymentStore", paymentStore, payload, paymentStore[req.query.orderRef], req.query.orderRef);
+    // here we sent the authorized or captured payment's reference which is paymentStore[req.query.orderRef].paymentRef
+    // and also payload as merchantAccount and unique new reference id
     const response = await modification.reversals(paymentStore[req.query.orderRef].paymentRef, payload);
     paymentStore[req.query.orderRef].status = "Refund Initiated";
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
@@ -96,6 +98,29 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
   } catch (err) {
     console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
     res.status(err.statusCode).json(err.message);
+  }
+});
+
+app.post("/api/capturePayment", async (req, res) => {
+  // here we sent the authorized or captured payment's reference which is [req.body.pspReference]
+  // and also payload as merchantAccount, amount = {currency and value } and unique new reference id
+  let paymentCaptureRequest = {
+    merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
+    amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
+    reference: uuid(),
+  };
+  try {
+    const { pspReference } = req.query;
+    console.log("pspReference", pspReference, paymentCaptureRequest);
+    // we can get the order id from req.body and find the amount in paymentStore
+    const response = await modification.captures(pspReference, paymentCaptureRequest);
+    payment.status = "Captured";
+    payment.paymentRef = response.pspReference;
+    res.json(response);
+    console.info("Capture initiated for", response);
+  } catch (error) {
+    console.error(`Error: ${error.message}, error code: ${error.errorCode}`);
+    res.status(error.statusCode).json(error.message);
   }
 });
 
@@ -136,6 +161,13 @@ app.post("/api/webhook/notification", async (req, res) => {
               } else {
                 payment.status = "Cancelled";
               }
+            }
+          } else if (NotificationRequestItem.eventCode === "CAPTURE") {
+            console.log("Capture notification received", NotificationRequestItem);
+            const payment = findPayment(NotificationRequestItem.pspReference);
+            if (payment) {
+              console.log("Payment found: ", JSON.stringify(payment));
+              payment.status = "Captured";
             }
           } else {
             console.info("skipping non actionable webhook");
