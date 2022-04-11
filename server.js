@@ -40,7 +40,6 @@ app.get("/api/getPaymentDataStore", async (req, res) => res.json(paymentStore));
 // Submitting a payment
 app.post("/api/sessions", async (req, res) => {
   const { allowedPaymentMethods } = req.body;
-  console.log("allowedPaymentMethods", allowedPaymentMethods);
   try {
     // unique ref for the transaction
     const orderRef = uuid();
@@ -56,8 +55,6 @@ app.post("/api/sessions", async (req, res) => {
       additionalData: { executeThreeD: true }, // optional
       // captureDelayHours: 0,
     };
-    console.log("body", body);
-
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.sessions({
       ...body,
@@ -102,7 +99,7 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
 });
 
 app.post("/api/capturePayment", async (req, res) => {
-  // here we sent the authorized or captured payment's reference which is [req.body.pspReference]
+  // here we sent the authorized payment's reference id which is paymentStore[req.query.orderRef].paymentRef
   // and also payload as merchantAccount, amount = {currency and value } and unique new reference id
   let paymentCaptureRequest = {
     merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
@@ -130,11 +127,7 @@ app.post("/api/webhook/notification", async (req, res) => {
   const notificationRequestItems = req.body.notificationItems;
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
-    console.info("Received webhook notification", NotificationRequestItem, process.env.HMAC_KEY);
-    console.log(
-      "\n\n\nvalidator.validateHMACNotificationRequestItem, process.env.HMAC_KEY\n\n\n\n",
-      validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)
-    );
+    console.info("Received webhook notification", NotificationRequestItem);
     try {
       if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
         if (NotificationRequestItem.success === "true") {
@@ -144,7 +137,7 @@ app.post("/api/webhook/notification", async (req, res) => {
             if (payment) {
               payment.status = "Authorised";
               payment.paymentRef = NotificationRequestItem.pspReference;
-              console.log("payment", payment);
+              console.log("\npayment\n", payment);
             }
           } else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
             const payment = findPayment(NotificationRequestItem.pspReference);

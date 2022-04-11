@@ -52,7 +52,7 @@ const CancelItem = ({ payment }) => {
         {payment.amount.value / 100} {/* adjust for minor units */}
         {payment.amount.currency}
       </p>
-      {payment.status === "Authorised" ? (
+      {payment.status === "Authorised" || payment.status === "Captured" ? (
         <button className="button btn-info w-25 my-4" onClick={() => dispatch(cancelOrRefundPayment(payment.reference))}>
           Cancel
         </button>
