@@ -110,8 +110,8 @@ app.post("/api/capturePayment", async (req, res) => {
     reference: uuid(),
   };
   try {
-    const { pspReference } = paymentStore[req.query.orderRef].paymentRef;
-    console.log("pspReference", pspReference, paymentCaptureRequest);
+    const pspReference = paymentStore[req.query.orderRef].paymentRef;
+    console.log("pspReference", paymentStore, pspReference, paymentCaptureRequest);
     // we can get the order id from req.body and find the amount in paymentStore
     const response = await modification.captures(pspReference, paymentCaptureRequest);
     payment.status = "Captured";
