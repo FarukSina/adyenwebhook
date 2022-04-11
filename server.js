@@ -89,6 +89,7 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
     // and also payload as merchantAccount and unique new reference id
     const response = await modification.reversals(paymentStore[req.query.orderRef].paymentRef, payload);
     paymentStore[req.query.orderRef].status = "Refund Initiated";
+    console.error("Refund", response.pspReference);
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
     res.json(response);
     console.info("Refund initiated for ", response);
@@ -111,7 +112,8 @@ app.post("/api/capturePayment", async (req, res) => {
     console.log("pspReference", paymentStore, pspReference, paymentCaptureRequest);
     // we can get the order id from req.body and find the amount in paymentStore
     const response = await modification.captures(pspReference, paymentCaptureRequest);
-    paymentStore[req.query.orderRef].status = "Refund Initiated";
+    console.error("Capture", response.pspReference);
+    paymentStore[req.query.orderRef].status = "Capture Initiated";
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
     res.json(response);
     console.info("Capture initiated for", response);
@@ -141,6 +143,7 @@ app.post("/api/webhook/notification", async (req, res) => {
             }
           } else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
             const payment = findPayment(NotificationRequestItem.pspReference);
+            console.log("Refund notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             if (payment) {
               console.log("Payment found: ", JSON.stringify(payment));
               // update with additionalData.modification.action
@@ -156,7 +159,7 @@ app.post("/api/webhook/notification", async (req, res) => {
               }
             }
           } else if (NotificationRequestItem.eventCode === "CAPTURE") {
-            console.log("Capture notification received", NotificationRequestItem);
+            console.log("Capture notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
               console.log("Payment found: ", JSON.stringify(payment));
