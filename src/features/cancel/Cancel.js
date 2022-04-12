@@ -53,13 +53,14 @@ const CancelItem = ({ payment }) => {
         {payment.amount.currency}
       </p>
       {payment.status === "Authorised" || payment.status === "Captured" ? (
-        <button className="button btn-info w-25 my-4" onClick={() => dispatch(cancelOrRefundPayment(payment.reference))}>
-          Reversal
-        </button>
-      ) : payment.status === "Cancellation" ? (
-        <button className="button btn-info w-25 my-4" onClick={() => dispatch(cancelPayment(payment.reference))}>
-          Cancel
-        </button>
+        <div style={{ display: "flex" }}>
+          <button className="button btn-info  my-4" onClick={() => dispatch(cancelOrRefundPayment(payment.reference))}>
+            Reversal
+          </button>
+          <button className="button btn-info  my-4" onClick={() => dispatch(cancelPayment(payment.reference))}>
+            Cancel
+          </button>
+        </div>
       ) : null}
     </li>
   );

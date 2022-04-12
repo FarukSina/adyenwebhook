@@ -136,8 +136,8 @@ app.post("/api/cancelPayment", async (req, res) => {
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
     res.json(response);
   } catch (error) {
-    console.error(`Error ${err.message}`);
-    res.status(error.statusCode).json(err.message);
+    console.error(`Error ${error.message}`);
+    res.status(error.statusCode).json(error.message);
   }
 });
 
