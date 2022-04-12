@@ -123,6 +123,24 @@ app.post("/api/capturePayment", async (req, res) => {
   }
 });
 
+app.post("/api/cancelPayment", async (req, res) => {
+  const pspReference = paymentStore[req.query.orderRef].paymentRef;
+  const paymentCancelRequest = {
+    merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
+    reference: nanoid(),
+  };
+  try {
+    const response = await modification.paymentsCancels(pspReference, paymentCancelRequest);
+    console.log("response cancel", response);
+    paymentStore[req.query.orderRef].status = "Cancel Initiated";
+    paymentStore[req.query.orderRef].modificationRef = response.pspReference;
+    res.json(response);
+  } catch (error) {
+    console.error(`Error ${err.message}`);
+    res.status(error.statusCode).json(err.message);
+  }
+});
+
 // Receive webhook notifications
 app.post("/api/webhook/notification", async (req, res) => {
   // get the notification request from POST body
@@ -164,6 +182,13 @@ app.post("/api/webhook/notification", async (req, res) => {
             if (payment) {
               console.log("Payment found: ", JSON.stringify(payment));
               payment.status = "Captured";
+            }
+          } else if (NotificationRequestItem.eventCode === "CANCELLATION") {
+            console.log("Cancellation notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
+            const payment = findPayment(NotificationRequestItem.pspReference);
+            if (payment) {
+              console.log("Payment Cancellation found: ", JSON.stringify(payment));
+              payment.status = "Cancellation";
             }
           } else {
             console.info("skipping non actionable webhook");
