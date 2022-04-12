@@ -81,10 +81,10 @@ export const initiateCheckout = (type) => async (dispatch) => {
   }
   console.log("allowedPaymentMethods2", allowedPaymentMethods);
   if (allowedPaymentMethods) {
-    body.allowedPaymentMethods = allowedPaymentMethods;
+    body = { allowedPaymentMethods };
   }
   if (split) {
-    body.split = split;
+    body = { ...body, split };
   }
   console.log("body", body);
   const response = await fetch(`https://adyenheroku2.herokuapp.com/api/sessions?type=${type}`, {

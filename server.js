@@ -56,6 +56,7 @@ app.post("/api/sessions", async (req, res) => {
       // captureDelayHours: 0,
       split: split ? split : null, // optional
     };
+    console.log("body", body);
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.sessions({
       ...body,
