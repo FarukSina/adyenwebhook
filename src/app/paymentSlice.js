@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { nanoid } from "nanoid";
 
 export const slice = createSlice({
   name: "payment",
@@ -53,17 +54,45 @@ export const { paymentSession, paymentDataStore } = slice.actions;
 
 export const initiateCheckout = (type) => async (dispatch) => {
   let allowedPaymentMethods = null;
+  let split = null;
+  let body = null;
   console.log("type", type);
   if (type === "dropin") {
     allowedPaymentMethods = ["card", "paypal"];
   }
+  if (type === "card") {
+    split = [
+      {
+        amount: {
+          value: 900,
+        },
+        type: "MarketPlace",
+        account: "8516026831348764",
+        reference: nanoid(),
+      },
+      {
+        amount: {
+          value: 100,
+        },
+        type: "Commission",
+        reference: nanoid(),
+      },
+    ];
+  }
   console.log("allowedPaymentMethods2", allowedPaymentMethods);
+  if (allowedPaymentMethods) {
+    body.allowedPaymentMethods = allowedPaymentMethods;
+  }
+  if (split) {
+    body.split = split;
+  }
+  console.log("body", body);
   const response = await fetch(`https://adyenheroku2.herokuapp.com/api/sessions?type=${type}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: allowedPaymentMethods ? JSON.stringify({ allowedPaymentMethods }) : null,
+    body: JSON.stringify({ ...body }),
   });
   dispatch(paymentSession([await response.json(), response.status]));
 };

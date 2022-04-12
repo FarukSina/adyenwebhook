@@ -39,7 +39,7 @@ app.get("/api/getPaymentDataStore", async (req, res) => res.json(paymentStore));
 
 // Submitting a payment
 app.post("/api/sessions", async (req, res) => {
-  const { allowedPaymentMethods } = req.body;
+  const { allowedPaymentMethods, split } = req.body;
   try {
     // unique ref for the transaction
     const orderRef = nanoid();
@@ -54,6 +54,7 @@ app.post("/api/sessions", async (req, res) => {
       allowedPaymentMethods: allowedPaymentMethods ? allowedPaymentMethods : null, // optional
       additionalData: { executeThreeD: true }, // optional
       // captureDelayHours: 0,
+      split: split ? split : null, // optional
     };
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.sessions({
