@@ -103,4 +103,14 @@ export const cancelPayment = (orderRef) => async (dispatch) => {
   dispatch(getPaymentDataStore());
 };
 
+export const refundPayment = (orderRef) => async (dispatch) => {
+  await fetch(`https://adyenheroku2.herokuapp.com/api/refundPayment?orderRef=${orderRef}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  dispatch(getPaymentDataStore());
+};
+
 export default slice.reducer;

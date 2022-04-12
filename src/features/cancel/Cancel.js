@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getPaymentDataStore, cancelOrRefundPayment, cancelPayment } from "../../app/paymentSlice";
+import { getPaymentDataStore, cancelOrRefundPayment, cancelPayment, refundPayment } from "../../app/paymentSlice";
 
 export const CancelContainer = () => (
   <main className="preview-page">
@@ -58,6 +58,9 @@ const CancelItem = ({ payment }) => {
             Reversal
           </button>
           <button className="button btn-info  my-4" onClick={() => dispatch(cancelPayment(payment.reference))}>
+            Cancel
+          </button>
+          <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference))}>
             Cancel
           </button>
         </div>

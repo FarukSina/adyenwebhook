@@ -130,9 +130,27 @@ app.post("/api/cancelPayment", async (req, res) => {
     reference: nanoid(),
   };
   try {
-    const response = await modification.paymentsCancels(pspReference, paymentCancelRequest);
+    const response = await modification.cancels(pspReference, paymentCancelRequest);
     console.log("response cancel", response);
     paymentStore[req.query.orderRef].status = "Cancel Initiated";
+    paymentStore[req.query.orderRef].modificationRef = response.pspReference;
+    res.json(response);
+  } catch (error) {
+    console.error(`Error ${error.message}`);
+    res.status(error.statusCode).json(error.message);
+  }
+});
+
+app.post("/api/refundPayment", async (req, res) => {
+  const pspReference = paymentStore[req.query.orderRef].paymentRef;
+  const paymentCancelRequest = {
+    merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
+    reference: nanoid(),
+  };
+  try {
+    const response = await modification.refunds(pspReference, paymentCancelRequest);
+    console.log("response refund", response);
+    paymentStore[req.query.orderRef].status = "Refund Initiated";
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
     res.json(response);
   } catch (error) {
@@ -188,7 +206,14 @@ app.post("/api/webhook/notification", async (req, res) => {
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
               console.log("Payment Cancellation found: ", JSON.stringify(payment));
-              payment.status = "Cancellation";
+              payment.status = "Cancelled";
+            }
+          } else if (NotificationRequestItem.eventCode === "REFUND") {
+            console.log("REFUND notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
+            const payment = findPayment(NotificationRequestItem.pspReference);
+            if (payment) {
+              console.log("Payment REFUND found: ", JSON.stringify(payment));
+              payment.status = "Refunded";
             }
           } else {
             console.info("skipping non actionable webhook");
