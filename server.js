@@ -207,14 +207,22 @@ app.post("/api/webhook/notification", async (req, res) => {
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
               console.log("Payment Cancellation found: ", JSON.stringify(payment));
-              payment.status = "Cancelled";
+              if (NotificationRequestItem.success) {
+                payment.status = "Cancelled";
+              } else {
+                payment.status = "Authorised";
+              }
             }
           } else if (NotificationRequestItem.eventCode === "REFUND") {
             console.log("REFUND notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
               console.log("Payment REFUND found: ", JSON.stringify(payment));
-              payment.status = "Refunded";
+              if (NotificationRequestItem.success) {
+                payment.status = "Refunded";
+              } else {
+                payment.status = "Captured";
+              }
             }
           } else {
             console.info("skipping non actionable webhook");
