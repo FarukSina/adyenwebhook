@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPaymentDataStore, cancelOrRefundPayment, cancelPayment, refundPayment } from "../../app/paymentSlice";
 
@@ -43,7 +43,7 @@ const CancelList = () => {
 
 const CancelItem = ({ payment }) => {
   const dispatch = useDispatch();
-
+  const [value, setValue] = useState(100);
   return (
     <li className="order-summary-list-list-item" key={payment.reference}>
       <p className="m-auto">Ref: {payment.paymentRef}</p>
@@ -60,9 +60,10 @@ const CancelItem = ({ payment }) => {
           <button className="button btn-info  my-4" onClick={() => dispatch(cancelPayment(payment.reference))}>
             Cancel
           </button>
-          <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference))}>
+          <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference, value))}>
             Refund
           </button>
+          <input type="text" onChange={(e) => setValue(e.target.value)} />
         </div>
       ) : null}
     </li>

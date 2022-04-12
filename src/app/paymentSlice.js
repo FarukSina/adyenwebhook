@@ -103,8 +103,8 @@ export const cancelPayment = (orderRef) => async (dispatch) => {
   dispatch(getPaymentDataStore());
 };
 
-export const refundPayment = (orderRef) => async (dispatch) => {
-  await fetch(`https://adyenheroku2.herokuapp.com/api/refundPayment?orderRef=${orderRef}`, {
+export const refundPayment = (orderRef, value) => async (dispatch) => {
+  await fetch(`https://adyenheroku2.herokuapp.com/api/refundPayment?orderRef=${orderRef}&value=${value}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
