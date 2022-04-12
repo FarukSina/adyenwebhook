@@ -145,6 +145,7 @@ app.post("/api/refundPayment", async (req, res) => {
   const pspReference = paymentStore[req.query.orderRef].paymentRef;
   const paymentCancelRequest = {
     merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
+    amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
     reference: nanoid(),
   };
   try {

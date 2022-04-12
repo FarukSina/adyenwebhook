@@ -61,7 +61,7 @@ const CancelItem = ({ payment }) => {
             Cancel
           </button>
           <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference))}>
-            Cancel
+            Refund
           </button>
         </div>
       ) : null}
