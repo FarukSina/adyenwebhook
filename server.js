@@ -203,7 +203,7 @@ app.post("/api/webhook/notification", async (req, res) => {
             console.log("Capture notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
-              if (payment.amount - payment.capturedValue === NotificationRequestItem.amount.value) {
+              if (payment.amount.value - payment.capturedValue === NotificationRequestItem.amount.value) {
                 payment.status = "Captured";
               } else {
                 payment.status = "Partially Captured";
