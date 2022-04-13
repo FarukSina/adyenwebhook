@@ -186,7 +186,6 @@ app.post("/api/webhook/notification", async (req, res) => {
             const payment = findPayment(NotificationRequestItem.pspReference);
             console.log("Refund notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             if (payment) {
-              console.log("Payment found: ", JSON.stringify(payment));
               // update with additionalData.modification.action
               if (
                 NotificationRequestItem.additionalData &&
@@ -198,6 +197,8 @@ app.post("/api/webhook/notification", async (req, res) => {
               } else {
                 payment.status = "Cancelled";
               }
+              console.log("Payment found: ", JSON.stringify(payment));
+              payment.refundedValue += NotificationRequestItem.amount.value;
             }
           } else if (NotificationRequestItem.eventCode === "CAPTURE") {
             console.log("Capture notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
@@ -215,12 +216,13 @@ app.post("/api/webhook/notification", async (req, res) => {
             console.log("Cancellation notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
-              console.log("Payment Cancellation found: ", JSON.stringify(payment));
               if (NotificationRequestItem.success) {
                 payment.status = "Cancelled";
               } else {
                 payment.status = "Authorised";
               }
+              payment.refundedValue += NotificationRequestItem.amount.value;
+              console.log("Payment Cancellation found: ", JSON.stringify(payment));
             }
           } else if (NotificationRequestItem.eventCode === "REFUND") {
             console.log("REFUND notification received", NotificationRequestItem, NotificationRequestItem.pspReference);

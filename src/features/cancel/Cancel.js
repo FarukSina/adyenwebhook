@@ -67,24 +67,28 @@ const CancelItem = ({ payment }) => {
         {payment.amount.value / 100} {/* adjust for minor units */}
         {payment.amount.currency}
       </p>
-      {payment.status === "Authorised" || payment.status === "Captured" ? (
-        <div style={{ display: "flex" }}>
-          <button className="button btn-info  my-4" onClick={() => dispatch(cancelOrRefundPayment(payment.reference))}>
-            Reversal
-          </button>
-          <button className="button btn-info  my-4" onClick={() => dispatch(cancelPayment(payment.reference))}>
-            Cancel
-          </button>
-        </div>
-      ) : null}
-      {payment.status === "Captured" || payment.status === "Refund Initiated" || payment.status === "Partially Captured" ? (
-        <div>
-          <button className="button btn-info w-50 my-4" onClick={() => dispatch(refundPayment(payment.reference, value))}>
-            Refund
-          </button>
-          <input type="text" onChange={(e) => setValue(e.target.value)} className="w-50 my-4" />
-        </div>
-      ) : null}
+      <p className="m-auto w-25">
+        {payment.status === "Authorised" || payment.status === "Captured" ? (
+          <div style={{ display: "flex" }}>
+            <button className="button btn-info  p-0" onClick={() => dispatch(cancelOrRefundPayment(payment.reference))}>
+              Reversal
+            </button>
+            <button className="button btn-info p-0" onClick={() => dispatch(cancelPayment(payment.reference))}>
+              Cancel
+            </button>
+          </div>
+        ) : null}
+        {payment.status === "Captured" || payment.status === "Refund Initiated" || payment.status === "Partially Refunded" ? (
+          <div className="m-auto">
+            <button className="button btn-info w-50 p-0" onClick={() => dispatch(refundPayment(payment.reference, value))}>
+              Refund
+            </button>
+            <input type="text" onChange={(e) => setValue(e.target.value)} className="w-100 p-0" />
+          </div>
+        ) : (
+          <p className="m-auto w-25">Fully Refunded</p>
+        )}
+      </p>
     </li>
   );
 };
