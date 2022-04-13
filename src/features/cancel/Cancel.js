@@ -60,7 +60,7 @@ const CancelItem = ({ payment }) => {
           <button className="button btn-info  my-4" onClick={() => dispatch(cancelPayment(payment.reference))}>
             Cancel
           </button>
-          {payment.status === "Captured" ? (
+          {payment.status === "Captured" || payment.status === "Refund Initiated" ? (
             <div>
               <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference, value))}>
                 Refund

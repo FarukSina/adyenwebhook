@@ -67,7 +67,7 @@ export const initiateCheckout = (type) => async (dispatch) => {
           value: 900,
         },
         type: "MarketPlace",
-        account: "8516026831348764",
+        account: "HttpsgithubcomFarukSina_FARUKKAYA_TEST",
         reference: nanoid(),
       },
       {
@@ -112,8 +112,8 @@ export const cancelOrRefundPayment = (orderRef) => async (dispatch) => {
   dispatch(getPaymentDataStore());
 };
 
-export const capturePayment = (orderRef) => async (dispatch) => {
-  await fetch(`https://adyenheroku2.herokuapp.com/api/capturePayment?orderRef=${orderRef}`, {
+export const capturePayment = (orderRef, value) => async (dispatch) => {
+  await fetch(`https://adyenheroku2.herokuapp.com/api/capturePayment?orderRef=${orderRef}&value=${value}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

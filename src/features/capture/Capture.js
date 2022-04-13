@@ -43,7 +43,7 @@ const CaptureList = () => {
 
 const CaptureItem = ({ payment }) => {
   const dispatch = useDispatch();
-
+  const [value, setValue] = useState(100);
   return (
     <li className="order-summary-list-list-item" key={payment.reference}>
       <p className="m-auto">Ref: {payment.paymentRef}</p>
@@ -52,10 +52,13 @@ const CaptureItem = ({ payment }) => {
         {payment.amount.value / 100} {/* adjust for minor units */}
         {payment.amount.currency}
       </p>
-      {payment.status === "Authorised" ? (
-        <button className="button btn-info w-25 my-4" onClick={() => dispatch(capturePayment(payment.reference))}>
-          Capture
-        </button>
+      {payment.status === "Authorised" || payment.status === "Capture Initiated" ? (
+        <div>
+          <button className="button btn-info w-25 my-4" onClick={() => dispatch(capturePayment(payment.reference, value))}>
+            Capture
+          </button>
+          <input type="text" onChange={(e) => setValue(e.target.value)} />
+        </div>
       ) : null}
     </li>
   );
