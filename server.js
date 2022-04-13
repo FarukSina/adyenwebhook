@@ -207,8 +207,8 @@ app.post("/api/webhook/notification", async (req, res) => {
                 payment.status = "Captured";
               } else {
                 payment.status = "Partially Captured";
-                payment.capturedValue += NotificationRequestItem.amount.value;
               }
+              payment.capturedValue += NotificationRequestItem.amount.value;
             }
             console.log("Payment found: ", JSON.stringify(payment));
           } else if (NotificationRequestItem.eventCode === "CANCELLATION") {
@@ -231,8 +231,8 @@ app.post("/api/webhook/notification", async (req, res) => {
                   payment.status = "Refunded";
                 } else {
                   payment.status = "Partially Refunded";
-                  payment.refundedValue += NotificationRequestItem.amount.value;
                 }
+                payment.refundedValue += NotificationRequestItem.amount.value;
               } else {
                 payment.status = "Captured";
               }

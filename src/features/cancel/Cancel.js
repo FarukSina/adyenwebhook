@@ -34,6 +34,14 @@ const CancelList = () => {
 
   return (
     <ul className="order-summary-list">
+      <li className="order-summary-list-list-item">
+        <p className="m-auto w-25">Ref</p>
+        <p className="m-auto w-25">Status</p>
+        <p className="m-auto w-25">Capture</p>
+        <p className="m-auto w-25">Refund</p>
+        <p className="m-auto w-25">Amount</p>
+        <p className="m-auto w-25">Actions</p>
+      </li>
       {validPayments.map((val) => (
         <CancelItem payment={val} />
       ))}
@@ -46,9 +54,16 @@ const CancelItem = ({ payment }) => {
   const [value, setValue] = useState(100);
   return (
     <li className="order-summary-list-list-item" key={payment.reference}>
-      <p className="m-auto">Ref: {payment.paymentRef}</p>
-      <p className="m-auto">{payment.status}</p>
-      <p className="m-auto">
+      <p className="m-auto w-25">Ref: {payment.paymentRef}</p>
+      <p className="m-auto w-25">{payment.status}</p>
+      <p className="m-auto w-25">
+        {payment.capturedValue / 100} {payment.amount.currency}
+      </p>
+      <p className="m-auto w-25">
+        {" "}
+        {payment.refundedValue / 100} {payment.amount.currency}
+      </p>
+      <p className="m-auto w-25">
         {payment.amount.value / 100} {/* adjust for minor units */}
         {payment.amount.currency}
       </p>
@@ -64,10 +79,10 @@ const CancelItem = ({ payment }) => {
       ) : null}
       {payment.status === "Captured" || payment.status === "Refund Initiated" || payment.status === "Partially Captured" ? (
         <div>
-          <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference, value))}>
+          <button className="button btn-info w-50 my-4" onClick={() => dispatch(refundPayment(payment.reference, value))}>
             Refund
           </button>
-          <input type="text" onChange={(e) => setValue(e.target.value)} className=" my-4" />
+          <input type="text" onChange={(e) => setValue(e.target.value)} className="w-50 my-4" />
         </div>
       ) : null}
     </li>
