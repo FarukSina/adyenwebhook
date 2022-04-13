@@ -67,6 +67,8 @@ app.post("/api/sessions", async (req, res) => {
     paymentStore[orderRef] = {
       amount: { currency: "EUR", value: 1000 },
       reference: orderRef,
+      refundedValue: 0,
+      capturedValue: 0,
     };
 
     res.json([response, orderRef]); // sending a tuple with orderRef as well to inform about the unique order reference
@@ -167,7 +169,6 @@ app.post("/api/refundPayment", async (req, res) => {
 app.post("/api/webhook/notification", async (req, res) => {
   // get the notification request from POST body
   const notificationRequestItems = req.body.notificationItems;
-
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem);
     try {
@@ -202,14 +203,14 @@ app.post("/api/webhook/notification", async (req, res) => {
             console.log("Capture notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
-              console.log("Payment found: ", JSON.stringify(payment));
-              if (payment.amount && payment.amount.value === NotificationRequestItem.amount.value) {
+              if (payment.amount - payment.capturedValue === NotificationRequestItem.amount.value) {
                 payment.status = "Captured";
               } else {
                 payment.status = "Partially Captured";
-                payment.amount.value = payment.amount.value - NotificationRequestItem.amount.value;
+                payment.capturedValue += NotificationRequestItem.amount.value;
               }
             }
+            console.log("Payment found: ", JSON.stringify(payment));
           } else if (NotificationRequestItem.eventCode === "CANCELLATION") {
             console.log("Cancellation notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             const payment = findPayment(NotificationRequestItem.pspReference);
@@ -225,17 +226,17 @@ app.post("/api/webhook/notification", async (req, res) => {
             console.log("REFUND notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
-              console.log("Payment REFUND found: ", JSON.stringify(payment));
               if (NotificationRequestItem.success) {
-                if (payment.amount.value === NotificationRequestItem.amount.value) {
+                if (payment.capturedValue - payment.refundedValue === NotificationRequestItem.amount.value) {
                   payment.status = "Refunded";
                 } else {
                   payment.status = "Partially Refunded";
-                  payment.amount.value = payment.amount.value - NotificationRequestItem.amount.value;
+                  payment.refundedValue += NotificationRequestItem.amount.value;
                 }
               } else {
                 payment.status = "Captured";
               }
+              console.log("Payment REFUND found: ", JSON.stringify(payment));
             }
           } else {
             console.info("skipping non actionable webhook");

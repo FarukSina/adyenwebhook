@@ -48,11 +48,13 @@ const CaptureItem = ({ payment }) => {
     <li className="order-summary-list-list-item" key={payment.reference}>
       <p className="m-auto">Ref: {payment.paymentRef}</p>
       <p className="m-auto">{payment.status}</p>
+      <p className="m-auto">{payment.capturedValue}</p>
+      <p className="m-auto"> {payment.refundedValue}</p>
       <p className="m-auto">
         {payment.amount.value / 100} {/* adjust for minor units */}
         {payment.amount.currency}
       </p>
-      {payment.status === "Authorised" || payment.status === "Capture Initiated" ? (
+      {payment.status === "Authorised" || payment.status === "Capture Initiated" || payment.status === "Partially Captured" ? (
         <div>
           <button className="button btn-info w-25 my-4" onClick={() => dispatch(capturePayment(payment.reference, value))}>
             Capture

@@ -60,14 +60,14 @@ const CancelItem = ({ payment }) => {
           <button className="button btn-info  my-4" onClick={() => dispatch(cancelPayment(payment.reference))}>
             Cancel
           </button>
-          {payment.status === "Captured" || payment.status === "Refund Initiated" ? (
-            <div>
-              <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference, value))}>
-                Refund
-              </button>
-              <input type="text" onChange={(e) => setValue(e.target.value)} className=" my-4" />
-            </div>
-          ) : null}
+        </div>
+      ) : null}
+      {payment.status === "Captured" || payment.status === "Refund Initiated" || payment.status === "Partially Captured" ? (
+        <div>
+          <button className="button btn-info  my-4" onClick={() => dispatch(refundPayment(payment.reference, value))}>
+            Refund
+          </button>
+          <input type="text" onChange={(e) => setValue(e.target.value)} className=" my-4" />
         </div>
       ) : null}
     </li>
