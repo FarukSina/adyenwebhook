@@ -110,13 +110,14 @@ app.post("/api/capturePayment", async (req, res) => {
     reference: nanoid(),
   };
   try {
-    const pspReference = paymentStore[req.query.orderRef].paymentRef;
+    const paymentInfo = paymentStore[req.query.orderRef];
+    const pspReference = paymentInfo.paymentRef;
     console.log("pspReference", paymentStore, pspReference, paymentCaptureRequest);
     // we can get the order id from req.body and find the amount in paymentStore
     const response = await modification.captures(pspReference, paymentCaptureRequest);
     console.error("Capture", response.pspReference);
-    paymentStore[req.query.orderRef].status = "Capture Initiated";
-    paymentStore[req.query.orderRef].modificationRef = response.pspReference;
+    paymentInfo.status = "Capture Initiated";
+    paymentInfo.modificationRef = response.pspReference;
     res.json(response);
     console.info("Capture initiated for", response);
   } catch (error) {
@@ -202,7 +203,12 @@ app.post("/api/webhook/notification", async (req, res) => {
             const payment = findPayment(NotificationRequestItem.pspReference);
             if (payment) {
               console.log("Payment found: ", JSON.stringify(payment));
-              payment.status = "Captured";
+              if (payment.amount && payment.amount.value === NotificationRequestItem.amount.value) {
+                payment.status = "Captured";
+              } else {
+                payment.status = "Partially Captured";
+                payment.amount.value = payment.amount.value - NotificationRequestItem.amount.value;
+              }
             }
           } else if (NotificationRequestItem.eventCode === "CANCELLATION") {
             console.log("Cancellation notification received", NotificationRequestItem, NotificationRequestItem.pspReference);
@@ -221,7 +227,12 @@ app.post("/api/webhook/notification", async (req, res) => {
             if (payment) {
               console.log("Payment REFUND found: ", JSON.stringify(payment));
               if (NotificationRequestItem.success) {
-                payment.status = "Refunded";
+                if (payment.amount.value === NotificationRequestItem.amount.value) {
+                  payment.status = "Refunded";
+                } else {
+                  payment.status = "Partially Refunded";
+                  payment.amount.value = payment.amount.value - NotificationRequestItem.amount.value;
+                }
               } else {
                 payment.status = "Captured";
               }
