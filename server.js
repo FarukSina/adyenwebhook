@@ -78,6 +78,10 @@ app.post("/api/sessions", async (req, res) => {
   }
 });
 
+app.post("/tapPost", async (req, res) => {
+  console.log("tapPost", req.body);
+});
+
 // Cancel or Refund a payment
 app.post("/api/cancelOrRefundPayment", async (req, res) => {
   // Create the payload for cancelling payment

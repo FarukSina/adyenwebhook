@@ -68,17 +68,22 @@ const CancelItem = ({ payment }) => {
         {payment.amount.currency}
       </p>
       <p className="m-auto w-25">
-        {payment.status === "Authorised" || payment.status === "Captured" ? (
+        {payment.status === "Authorised" || payment.status === "Captured" || payment.status === "Partially Captured" ? (
           <div style={{ display: "flex" }}>
             <button className="button btn-info  p-0" onClick={() => dispatch(cancelOrRefundPayment(payment.reference))}>
               Reversal
             </button>
-            <button className="button btn-info p-0" onClick={() => dispatch(cancelPayment(payment.reference))}>
-              Cancel
-            </button>
+            {payment.status !== "Captured" ? (
+              <button className="button btn-info p-0" onClick={() => dispatch(cancelPayment(payment.reference))}>
+                Cancel
+              </button>
+            ) : null}
           </div>
         ) : null}
-        {payment.status === "Captured" || payment.status === "Refund Initiated" || payment.status === "Partially Refunded" ? (
+        {payment.status === "Captured" ||
+        payment.status === "Refund Initiated" ||
+        payment.status === "Partially Refunded" ||
+        payment.status === "Partially Captured" ? (
           <div className="m-auto">
             <button className="button btn-info w-50 p-0" onClick={() => dispatch(refundPayment(payment.reference, value))}>
               Refund
