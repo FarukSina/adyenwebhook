@@ -3,6 +3,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const { nanoid } = require("nanoid");
+const crypto = require("crypto");
 
 const { Client, Config, CheckoutAPI, Modification, hmacValidator } = require("@adyen/api-library");
 // init app
@@ -22,6 +23,11 @@ dotenv.config({
   path: "./.env",
 });
 
+function signHmacSha512(key, str) {
+  let hmac = crypto.createHmac("sha512", key);
+  let signed = hmac.update(Buffer.from(str, "utf-8")).digest("hex");
+  return signed;
+}
 // Adyen Node.js API library boilerplate (configuration, etc.)
 const config = new Config();
 config.apiKey = process.env.REACT_APP_ADYEN_API_KEY;
@@ -79,10 +85,31 @@ app.post("/api/sessions", async (req, res) => {
 });
 
 app.post("/tapPost", async (req, res) => {
-  console.log("req", req);
-  console.log("req.query", req.query);
-  console.log("tapPost", req.body);
-  console.log("req", req.headers);
+  const postedHashString = req.hashstring;
+  console.log("tapPost body", req.body);
+  const {
+    id,
+    amount,
+    currency,
+    reference: { gateway: gateway_reference, payment: payment_reference },
+    status,
+    transaction: { created },
+  } = req.body;
+  // Your Secret API Key Provided by Tap
+  const secretAPIKey = process.env.REACT_APP_SECRET_KEY;
+  // Charge or Authorize - Create a hashstring from the posted response data + the data that are related to you.
+  // const toBeHashedString = 'x_id'.id.'x_amount'.$amount.'x_currency'.$currency.'x_gateway_reference'.$gateway_reference.'x_payment_reference'.$payment_reference.'x_status'.$status.'x_created'.$created.'';
+  const toBeHashedString = `x_id.${id}.x_amount.${amount}.x_currency.${currency}.x_gateway_reference.${gateway_reference}.x_payment_reference.${payment_reference}.x_status.${status}.x_created.${created}.`;
+  console.log("toBeHashedString", toBeHashedString);
+  // Create your hashstring by passing concatinated string and your secret API Key
+  const myHashString = signHmacSha512(secretAPIKey, toBeHashedString);
+  console.log("myHashString", myHashString);
+  // Legitimate the post request by comparing the hashstring you computed with the one posted in the header
+  if (myHashString == postedHashString) {
+    console.log("Secure Post");
+  } else {
+    console.log("Insecure Post");
+  }
 });
 
 // Cancel or Refund a payment
