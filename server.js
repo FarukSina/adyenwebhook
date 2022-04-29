@@ -23,8 +23,8 @@ dotenv.config({
   path: "./.env",
 });
 
-function signHmacSha512(key, str) {
-  let hmac = crypto.createHmac("sha512", key);
+function signHmacSha256(key, str) {
+  let hmac = crypto.createHmac("sha256", key);
   let signed = hmac.update(Buffer.from(str, "utf-8")).digest("hex");
   return signed;
 }
@@ -104,7 +104,7 @@ app.post("/tapPost", async (req, res) => {
   console.log("secretAPIKey", secretAPIKey);
   console.log("toBeHashedString", toBeHashedString);
   // Create your hashstring by passing concatinated string and your secret API Key
-  const myHashString = signHmacSha512(secretAPIKey, toBeHashedString);
+  const myHashString = signHmacSha256(secretAPIKey, toBeHashedString);
   console.log("myHashString", myHashString);
   // Legitimate the post request by comparing the hashstring you computed with the one posted in the header
   if (myHashString == postedHashString) {
