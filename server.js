@@ -26,6 +26,11 @@ dotenv.config({
 function signHmacSha256(key, str) {
   let hmac = crypto.createHmac("sha256", key);
   let signed = hmac.update(Buffer.from(str, "utf-8")).digest("hex");
+  let signed2 = hmac.update(Buffer.from(str, "utf-8")).digest("base64");
+  let signed3 = hmac.update(Buffer.from(str, "json")).digest("base64");
+  let signed4 = hmac.update(str).digest("hex");
+  let signed5 = hmac.update(str).digest("base64");
+  console.log("signed", signed2, signed3, signed4, signed5);
   return signed;
 }
 // Adyen Node.js API library boilerplate (configuration, etc.)
