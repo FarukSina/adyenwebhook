@@ -86,6 +86,11 @@ app.post("/api/sessions", async (req, res) => {
 
 app.post("/tapPost", async (req, res) => {
   console.log("req", req);
+  console.log("req2", req[Symbol(kHeaders)]);
+  console.log("req3", req.headers);
+  console.log("req4", req.headers);
+  console.log("req5", req.rawHeaders);
+
   const postedHashString = req.hashstring;
   console.log("tapPost body", req.body);
   const {
