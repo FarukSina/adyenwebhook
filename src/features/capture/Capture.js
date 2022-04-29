@@ -72,7 +72,7 @@ const CaptureItem = ({ payment }) => {
         payment.status === "Authorised" ||
         payment.status === "Capture Initiated" ||
         payment.status === "Partially Captured" ||
-        payment.status == "Refunded") &&
+        payment.status === "Refunded") &&
       payment.amount.value !== payment.capturedValue ? (
         <div className="w-25">
           <button className="button btn-info w-50 my-4" onClick={() => dispatch(capturePayment(payment.reference, value))}>
