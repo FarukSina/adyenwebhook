@@ -100,6 +100,8 @@ app.post("/tapPost", async (req, res) => {
   // Charge or Authorize - Create a hashstring from the posted response data + the data that are related to you.
   // const toBeHashedString = 'x_id'.id.'x_amount'.$amount.'x_currency'.$currency.'x_gateway_reference'.$gateway_reference.'x_payment_reference'.$payment_reference.'x_status'.$status.'x_created'.$created.'';
   const toBeHashedString = `x_id.${id}.x_amount.${amount}.x_currency.${currency}.x_gateway_reference.${gateway_reference}.x_payment_reference.${payment_reference}.x_status.${status}.x_created.${created}.`;
+  console.log("postedHashString", postedHashString);
+  console.log("secretAPIKey", secretAPIKey);
   console.log("toBeHashedString", toBeHashedString);
   // Create your hashstring by passing concatinated string and your secret API Key
   const myHashString = signHmacSha512(secretAPIKey, toBeHashedString);
