@@ -79,8 +79,10 @@ app.post("/api/sessions", async (req, res) => {
 });
 
 app.post("/tapPost", async (req, res) => {
-  console.log("tapPost", req.query);
+  console.log("req", req);
+  console.log("req.query", req.query);
   console.log("tapPost", req.body);
+  console.log("req", req.headers);
 });
 
 // Cancel or Refund a payment
