@@ -85,6 +85,7 @@ app.post("/api/sessions", async (req, res) => {
 });
 
 app.post("/tapPost", async (req, res) => {
+  console.log("req", req);
   const postedHashString = req.hashstring;
   console.log("tapPost body", req.body);
   const {
