@@ -100,12 +100,19 @@ app.post("/tapPost", async (req, res) => {
   // Charge or Authorize - Create a hashstring from the posted response data + the data that are related to you.
   // const toBeHashedString = 'x_id'.id.'x_amount'.$amount.'x_currency'.$currency.'x_gateway_reference'.$gateway_reference.'x_payment_reference'.$payment_reference.'x_status'.$status.'x_created'.$created.'';
   const toBeHashedString = `x_id.${id}.x_amount.${amount}.x_currency.${currency}.x_gateway_reference.${gateway_reference}.x_payment_reference.${payment_reference}.x_status.${status}.x_created.${created}.`;
+  const toBeHashedString2 = `${id}.${amount}.${currency}.${gateway_reference}.${payment_reference}.${status}.${created}`;
+  const toBeHashedString3 = `${id}${amount}${currency}${gateway_reference}${payment_reference}${status}${created}`;
+  const toBeHashedString4 = `${id}.${amount}.${currency}.${gateway_reference}.${payment_reference}.${status}.${created}.''`;
+
   console.log("postedHashString", postedHashString);
   console.log("secretAPIKey", secretAPIKey);
   console.log("toBeHashedString", toBeHashedString);
   // Create your hashstring by passing concatinated string and your secret API Key
   const myHashString = signHmacSha256(secretAPIKey, toBeHashedString);
-  console.log("myHashString", myHashString);
+  const myHashString2 = signHmacSha256(secretAPIKey, toBeHashedString2);
+  const myHashString3 = signHmacSha256(secretAPIKey, toBeHashedString3);
+  const myHashString4 = signHmacSha256(secretAPIKey, toBeHashedString4);
+  console.log("myHashString", myHashString, myHashString2, myHashString3, myHashString4);
   // Legitimate the post request by comparing the hashstring you computed with the one posted in the header
   if (myHashString == postedHashString) {
     console.log("Secure Post");
