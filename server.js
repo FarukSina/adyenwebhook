@@ -105,6 +105,7 @@ app.post("/tapPost", async (req, res) => {
   console.log("postedHashString", postedHashString);
   console.log("secretAPIKey", secretAPIKey);
   console.log("toBeHashedString", toBeHashedString);
+  console.log("toBeHashedString2", toBeHashedString2);
   // Create your hashstring by passing concatinated string and your secret API Key
   const myHashString = signHmacSha256(secretAPIKey, toBeHashedString);
   const myHashString2 = signHmacSha256(secretAPIKey, toBeHashedString2);
