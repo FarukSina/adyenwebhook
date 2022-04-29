@@ -79,6 +79,7 @@ app.post("/api/sessions", async (req, res) => {
 });
 
 app.post("/tapPost", async (req, res) => {
+  console.log("tapPost", req.query);
   console.log("tapPost", req.body);
 });
 
