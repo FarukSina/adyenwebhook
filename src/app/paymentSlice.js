@@ -87,7 +87,7 @@ export const initiateCheckout = (type) => async (dispatch) => {
     body = { ...body, split };
   }
   console.log("body", body);
-  const response = await fetch(`https://626be6c7beb6e70008fa3637--farukwebhook.netlify.app/api/sessions?type=${type}`, {
+  const response = await fetch(`https://farukwebhooktest.herokuapp.com/api/sessions?type=${type}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -98,12 +98,12 @@ export const initiateCheckout = (type) => async (dispatch) => {
 };
 
 export const getPaymentDataStore = () => async (dispatch) => {
-  const response = await fetch("https://626be6c7beb6e70008fa3637--farukwebhook.netlify.app/api/getPaymentDataStore");
+  const response = await fetch("https://farukwebhooktest.herokuapp.com/api/getPaymentDataStore");
   dispatch(paymentDataStore([await response.json(), response.status]));
 };
 
 export const cancelOrRefundPayment = (orderRef) => async (dispatch) => {
-  await fetch(`https://626be6c7beb6e70008fa3637--farukwebhook.netlify.app/api/cancelOrRefundPayment?orderRef=${orderRef}`, {
+  await fetch(`https://farukwebhooktest.herokuapp.com/api/cancelOrRefundPayment?orderRef=${orderRef}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -113,7 +113,7 @@ export const cancelOrRefundPayment = (orderRef) => async (dispatch) => {
 };
 
 export const capturePayment = (orderRef, value) => async (dispatch) => {
-  await fetch(`https://626be6c7beb6e70008fa3637--farukwebhook.netlify.app/api/capturePayment?orderRef=${orderRef}&value=${value}`, {
+  await fetch(`https://farukwebhooktest.herokuapp.com/api/capturePayment?orderRef=${orderRef}&value=${value}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export const capturePayment = (orderRef, value) => async (dispatch) => {
 };
 
 export const cancelPayment = (orderRef) => async (dispatch) => {
-  await fetch(`https://626be6c7beb6e70008fa3637--farukwebhook.netlify.app/api/cancelPayment?orderRef=${orderRef}`, {
+  await fetch(`https://farukwebhooktest.herokuapp.com/api/cancelPayment?orderRef=${orderRef}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export const cancelPayment = (orderRef) => async (dispatch) => {
 };
 
 export const refundPayment = (orderRef, value) => async (dispatch) => {
-  await fetch(`https://626be6c7beb6e70008fa3637--farukwebhook.netlify.app/api/refundPayment?orderRef=${orderRef}&value=${value}`, {
+  await fetch(`https://farukwebhooktest.herokuapp.com/api/refundPayment?orderRef=${orderRef}&value=${value}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
