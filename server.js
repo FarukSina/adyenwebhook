@@ -25,17 +25,10 @@ dotenv.config({
 
 function signHmacSha256(key, str) {
   let hmac = crypto.createHmac("sha256", key);
-  let hmac2 = crypto.createHmac("sha256", key);
-  let hmac4 = crypto.createHmac("sha256", key);
-  let hmac5 = crypto.createHmac("sha256", key);
-
   let signed = hmac.update(Buffer.from(str, "utf-8")).digest("hex");
-  let signed2 = hmac2.update(Buffer.from(str, "utf-8")).digest("base64");
-  let signed4 = hmac4.update(str).digest("hex");
-  let signed5 = hmac5.update(str).digest("base64");
-  console.log("signed", signed2, signed4, signed5);
   return signed;
 }
+
 // Adyen Node.js API library boilerplate (configuration, etc.)
 const config = new Config();
 config.apiKey = process.env.REACT_APP_ADYEN_API_KEY;
@@ -107,17 +100,13 @@ app.post("/tapPost", async (req, res) => {
   const secretAPIKey = process.env.REACT_APP_SECRET_KEY;
   // Charge or Authorize - Create a hashstring from the posted response data + the data that are related to you.
   // const toBeHashedString = 'x_id'.id.'x_amount'.$amount.'x_currency'.$currency.'x_gateway_reference'.$gateway_reference.'x_payment_reference'.$payment_reference.'x_status'.$status.'x_created'.$created.'';
-  const toBeHashedString = `x_id.${id}.x_amount.${amount}.x_currency.${currency}.x_gateway_reference.${gateway_reference}.x_payment_reference.${payment_reference}.x_status.${status}.x_created.${created}.`;
-  const toBeHashedString2 = `x_id${id}x_amount${amount}x_currency${currency}x_gateway_reference${gateway_reference}x_payment_reference${payment_reference}x_status${status}x_created${created}`;
+  const toBeHashedString = `x_id${id}x_amount${amount}x_currency${currency}x_gateway_reference${gateway_reference}x_payment_reference${payment_reference}x_status${status}x_created${created}`;
 
-  console.log("postedHashString", postedHashString);
   console.log("secretAPIKey", secretAPIKey);
   console.log("toBeHashedString", toBeHashedString);
-  console.log("toBeHashedString2", toBeHashedString2);
   // Create your hashstring by passing concatinated string and your secret API Key
   const myHashString = signHmacSha256(secretAPIKey, toBeHashedString);
-  const myHashString2 = signHmacSha256(secretAPIKey, toBeHashedString2);
-  console.log("myHashString", myHashString, myHashString2);
+  console.log("myHashString", myHashString, postedHashString);
   // Legitimate the post request by comparing the hashstring you computed with the one posted in the header
   if (myHashString == postedHashString) {
     console.log("Secure Post");
