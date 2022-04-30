@@ -30,15 +30,6 @@ function signHmacSha256(key, str) {
   return signed;
 }
 
-const secretAPIKey2 = process.env.REACT_APP_SECRET_KEY;
-
-const myHashString = signHmacSha256(
-  secretAPIKey2,
-  "x_idauth_TS020220220353Ol7s3004775x_amount1000.00x_currencyAEDx_gateway_reference123456789012345x_payment_reference3730220353040728295x_statusAUTHORIZEDx_created1651290782807"
-);
-const postedHashString2 = "98ca0f89f3ba89d615c9c58753df452fbd045ba76d42aa0c7d991d9fb243a95e";
-console.log("myHashString", myHashString);
-
 // Adyen Node.js API library boilerplate (configuration, etc.)
 const config = new Config();
 config.apiKey = process.env.REACT_APP_ADYEN_API_KEY;
