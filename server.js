@@ -101,7 +101,9 @@ app.post("/tapPost", async (req, res) => {
   const secretAPIKey = process.env.REACT_APP_SECRET_KEY;
   // Charge or Authorize - Create a hashstring from the posted response data + the data that are related to you.
   // const toBeHashedString = 'x_id'.id.'x_amount'.$amount.'x_currency'.$currency.'x_gateway_reference'.$gateway_reference.'x_payment_reference'.$payment_reference.'x_status'.$status.'x_created'.$created.'';
-  const toBeHashedString = `x_id${id}x_amount${amount}x_currency${currency}.00x_gateway_reference${gateway_reference}x_payment_reference${payment_reference}x_status${status}x_created${created}`;
+  const toBeHashedString = `x_id${id}x_amount${parseInt(amount).toFixed(
+    2
+  )}x_currency${currency}x_gateway_reference${gateway_reference}x_payment_reference${payment_reference}x_status${status}x_created${created}`;
   console.log("secretAPIKey", secretAPIKey);
   console.log("toBeHashedString", toBeHashedString);
   // Create your hashstring by passing concatinated string and your secret API Key
